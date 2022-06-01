@@ -7,14 +7,14 @@ use App\Puzzle;
 
 class PuzzleController extends Controller
 {
-    protected $validationRules = [
-        'title'         =>  'min:5|max:250',
-        'pieces'        =>  'numeric',
-        'description'   =>  'min:5|max:500|',
-        'price'         =>  'numeric',
-        'available'     =>  'boolean',
-        'quantity'      =>  'numeric',
-    ];
+    // protected $validationRules = [
+    //     'title'         =>  'min:5|max:250',
+    //     'pieces'        =>  'numeric',
+    //     'description'   =>  'min:5|max:500|',
+    //     'price'         =>  'numeric',
+    //     'available'     =>  'boolean',
+    //     'quantity'      =>  'numeric',
+    // ];
 
     public function index()
     {
@@ -40,10 +40,14 @@ class PuzzleController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate($this->validationRules);
+        // $request->validate($this->validationRules);
         $formData = $request->all();
-        $newPuzzle = Puzzle::create($formData);
-        return redirect()->route('puzzles.show', $newPuzzle->id);
+
+        $puzzle = new Puzzle();
+        $puzzle->fill($formData);
+        $puzzle->save();
+        // $newPuzzle = Puzzle::create($request->only('title', 'pieces', 'description', 'available', 'quantity', 'price'));
+        return redirect()->route('puzzles.show', $puzzle->id);
     }
 
     /**
