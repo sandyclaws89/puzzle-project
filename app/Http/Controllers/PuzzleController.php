@@ -4,16 +4,19 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Puzzle;
+use Illuminate\Validation\Rule;
 
 class PuzzleController extends Controller
 {
     // protected $validationRules = [
     //     'title'         =>  'min:5|max:250',
-    //     'pieces'        =>  'numeric',
+    //     'pieces'        =>  'min:100|max:5000|numeric',
+    //     'image'         =>  'nullable|min:5|max:500',
     //     'description'   =>  'min:5|max:500|',
-    //     'price'         =>  'numeric',
+    //     'brand'         =>  'nullable|min:5|max:250',
+    //     'price'         =>  'numeric|min:5|max:500',
     //     'available'     =>  'boolean',
-    //     'quantity'      =>  'numeric',
+    //     'quantity'      =>  'numeric|min:5|max:500',
     // ];
 
     public function index()
@@ -46,8 +49,8 @@ class PuzzleController extends Controller
         $puzzle = new Puzzle();
         $puzzle->fill($formData);
         $puzzle->save();
-        // $newPuzzle = Puzzle::create($request->only('title', 'pieces', 'description', 'available', 'quantity', 'price'));
-        return redirect()->route('puzzles.show', $puzzle->id);
+        $newPuzzle = Puzzle::create($formData);
+        return redirect()->route('puzzles.show', $puzzle->id)->with('status', 'Complited with succes!');
     }
 
     /**
@@ -58,7 +61,7 @@ class PuzzleController extends Controller
      */
     public function show(Puzzle $puzzle)
     {
-        //
+        return view('puzzles.show', ['pageTitle' => $puzzle->title, 'puzzle' => $puzzle ]);
     }
 
     /**
@@ -69,7 +72,7 @@ class PuzzleController extends Controller
      */
     public function edit(Puzzle $puzzle)
     {
-        //
+        return view('puzzles.edit', compact('puzzle'));
     }
 
     /**
@@ -81,7 +84,11 @@ class PuzzleController extends Controller
      */
     public function update(Request $request, Puzzle $puzzle)
     {
-        //
+        // $request->validate($this->validationRules);
+
+        $formData = $request->all();
+        $puzzle->update($formData);
+        return redirect()->route('puzzles.show', $puzzle->id);
     }
 
     /**
@@ -92,6 +99,12 @@ class PuzzleController extends Controller
      */
     public function destroy(Puzzle $puzzle)
     {
-        //
-    }
+        $previousURL = url()->previous();
+        if ($previousURL === route('puzzles.edit', $puzzle->id)) {
+                 $previousURL = route('puzzles.index');
+           }
+           $puzzle->delete();
+           return redirect()->route('puzzles.index');
+   }
 }
+

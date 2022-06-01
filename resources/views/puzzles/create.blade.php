@@ -1,7 +1,7 @@
 @extends('template.base')
 @section('pageTitle', 'New Post')
 @section('pageMain')
-<div class="container">
+<div class="container my-5">
     <div class="row">
         <div class="col">
             <form method="POST" action="{{route('puzzles.store')}}">
@@ -23,7 +23,7 @@
 
                 <div class="mb-3 form-check">
                     <label class="form-check-label" for="available">Available</label>
-                    <input type="checkbox" class="form-check-input" id="available" name="available"  value="1" checked>
+                    <input type="checkbox" class="form-check-input" id="available" name="available"  value="0" checked>
                 </div>
 
                 <div class="col-md-4">
